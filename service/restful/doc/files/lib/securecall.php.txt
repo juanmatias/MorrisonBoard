@@ -1,0 +1,61 @@
+<?php
+/**
+ * Class securecall | lib/securecall.php
+ *
+ * @package RESTful WebService Model
+ * @author Juan Matias de la Camara Beovide <juanmatias@gmail.com>
+ *
+ */
+
+ /**
+  * Class securecall - Implementation of API class for get info from modules
+  *
+  * This class gets information from modules in vendor/samplevendor/Modules
+  *
+  */
+
+class securecall extends API
+{
+    /**
+    * class constructor, verifies pair (apikey,origin) to allow access
+    * @param request $request The request
+    * @param string $origin The request origin
+    */
+    public function __construct($request, $origin) {
+        parent::__construct($request);
+
+        // Abstracted out for example
+        // $APIKey = new APIKey();
+        // $User = new Models\User();
+        //
+        // if (!array_key_exists('apiKey', $this->request)) {
+        //     throw new Exception('No API Key provided');
+        // } else if (!$APIKey->verifyKey($this->request['apiKey'], $origin)) {
+        //     throw new Exception('Invalid API Key');
+        // } else if (array_key_exists('token', $this->request) &&
+        //      !$User->get('token', $this->request['token'])) {
+        //
+        //     throw new Exception('Invalid User Token');
+        // }
+        //
+
+    }
+
+    /**
+     * stats endpoint handles all requests and calls to modules if they exist
+     */
+     protected function stats() {
+        if ($this->method == 'GET') {
+            $r = new \samplevendor\Modules\destinos();
+            $s = '' ;
+            foreach ($this->args as $key => $value) {
+              $s .= $key.' -> '.$value.' // ';
+            }
+            return array( "endpoint" => $this->endpoint,  "Your verb is " => $this->verb, "Your parameters are " =>$s);
+        } else {
+            return "Only accepts GET requests";
+        }
+     }
+ }
+ ?>
+

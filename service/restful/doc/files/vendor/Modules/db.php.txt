@@ -1,0 +1,94 @@
+<?php
+class DB_connect {
+    public $datab;
+    public $prepared;
+    public $results;
+        public function __construct($host, $user, $pass, $db)
+        {
+            $this->datab=new mysqli($host, $user, $pass, $db);
+               if ($this->datab->connect_error){
+                 die('connect_error : '.$this->datab->connect_error." Error Number : ".$this->datab->connect_errno);
+               }
+          }
+
+          public function getRow($tableName, $condition = '')
+          {
+            if($condition != ''){
+              $condition = ' WHERE '.$condition;
+            }
+            $this->prepareQuery('SELECT * FROM '.$tableName.' '.$condition);
+            return $this->executeQuery();
+          }
+
+          public function countRows($tableName, $condition = '')
+          {
+            if($condition != ''){
+              $condition = ' WHERE '.$condition;
+            }
+            $this->prepareQuery('SELECT count(*) as qty FROM '.$tableName.' '.$condition);
+            return $this->executeQuery();
+          }
+
+          public function queryPrep($sql)
+          {
+            $this->prepareQuery($sql);
+          }
+
+          public function queryExe()
+          {
+            return $this->executeQuery();
+          }
+
+          public function close(){
+            $this->datab->close();
+          }
+
+          public function bindParams(array $p = array())
+          {
+            $param_types = '';
+            $params = array();
+            $params_2_send = array();
+            foreach ($p as $key => $value)
+            {
+              //first param is Types: s = string, i = integer, d = double, b = blob
+              $param_types .= $value[0];
+              $params[] = $value[1];
+            }
+            $params_2_send[] = & $param_types;
+            for($f=0;$f<count($params);$f++)
+            {
+              $params_2_send[] = & $params[$f];
+            }
+            if($this->prepared!=false)
+            {
+              /* use call_user_func_array, as $stmt->bind_param('s', $param); does not accept params array */
+              call_user_func_array(array($this->prepared, 'bind_param'), $params_2_send);
+
+            }else {
+              echo 'ERROR';
+            }
+
+          }
+
+          public function getLastId()
+          {
+            return $this->datab->insert_id;
+          }
+
+          public function getResults(){
+            return $this->prepared->get_result();
+          }
+
+          private function prepareQuery($sql)
+          {
+            $this->prepared = $this->datab->prepare($sql);
+          }
+          private function executeQuery()
+          {
+            return $this->results = $this->prepared->execute();
+          }
+
+}
+
+?>
+

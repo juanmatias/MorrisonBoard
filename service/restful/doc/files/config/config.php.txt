@@ -1,0 +1,64 @@
+<?php
+/**
+ * Config file | config/config.php
+ *
+ * @package RESTful WebService Model
+ * @author Juan Matias de la Camara Beovide <juanmatias@gmail.com>
+ *
+ */
+
+define('ROOT_DIR',getcwd().'/');
+define('DB_HOST','localhost');
+define('DB_NAME','pentatistics');
+define('DB_USR','pentatistics');
+define('DB_PWD','$penta.290%');
+
+$errors = array(
+  1 => 'Invalid parameters',
+  2 => 'Invalid token',
+  3 => 'Unknown error',
+  4 => 'Unknown sub action',
+
+);
+
+// set autoload for classes
+$classesDir = array (
+    ROOT_DIR.'lib/',
+    ROOT_DIR.'vendor/',
+);
+
+/**
+ * Look for a class file in given directories
+ *
+ * @property string $class_name Class name with full namespace
+ *
+ */
+function look_for_class_file($class_name)
+{
+  global $classesDir;
+
+  $class_name = ltrim($class_name, '\\');
+  $classPath  = '';
+  $namespace = '';
+  if ($lastNsPos = strrpos($class_name, '\\')) {
+      $namespace = substr($class_name, 0, $lastNsPos);
+      $class_name = substr($class_name, $lastNsPos + 1);
+      $classPath = str_replace('\\', DIRECTORY_SEPARATOR, $namespace).DIRECTORY_SEPARATOR;
+  }
+  $fileName = $classPath.$class_name.'.php';
+
+  foreach ($classesDir as $directory) {
+      if (file_exists($directory . $fileName)) {
+          require_once ($directory . $fileName);
+          return;
+      }
+  }
+
+}
+
+spl_autoload_register(look_for_class_file);
+
+
+
+?>
+

@@ -1,0 +1,36 @@
+====== Restful API handler ======
+
+===== What is this? =====
+
+This is a piece of code to handle API RESTful calls.
+
+The idea is to have a common code to migrate between systems. When you call an endpoint you are calling a class in vendorname/Modules. When you refer to a verb you are calling an method in the object created with this class.
+
+This way you only need to add classes with its methods and you have services.
+
+===== Install =====
+
+==== Prerequisites ====
+
+Apache (or apache like) with rewrite enabled.
+A DBRS and mysqli depending on what you want to do (demo class uses a DBRS, DB_connect.php, from //core//, uses mysqli).
+
+==== Steps ====
+
+1. Put this code in a webserver
+2. Modify .htaccess
+3. Modify config.php
+4. Add your own classes
+
+==== Detail ====
+
+=== .htaccess ===
+
+<code>
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ ./api.php?request=$1 [QSA,NC,L]
+</IfModule>
+</code>
