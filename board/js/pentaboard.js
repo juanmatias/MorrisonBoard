@@ -152,7 +152,7 @@ function add_widget_donut(idx,data,usroptions, ...args)
   var s = '';
   for(data_idx in data)
   {
-    s += '<div style="color: '+options['colors'][data_idx]+'">'+data[data_idx].label+' '+data[data_idx].value+'</div>';
+    s += '<div style="color: '+options['colors'][data_idx]+'"><strong>'+data[data_idx].label+'</strong> '+data[data_idx].value+unit+'</div>';
   }
   $('#'+commentidpreffix+idx).html(s);
   $('#'+commentidpreffix+idx).addClass('donut');
@@ -184,7 +184,7 @@ function add_widget_pie(idx,data,usroptions, ...args)
   var s = '';
   for(data_idx in data)
   {
-    s += '<div style="color: '+options['colors'][data_idx]+'">'+data[data_idx].label+' '+data[data_idx].value+'</div>';
+    s += '<div style="color: '+options['colors'][data_idx]+'"><strong>'+data[data_idx].label+'</strong> '+data[data_idx].value+unit+'</div>';
   }
   $('#'+commentidpreffix+idx).html(s);
   $('#'+commentidpreffix+idx).addClass('pie');
@@ -332,7 +332,7 @@ function add_widget_text(idx,data,usroptions, ...args)
       $(this.mytextdiv).css({'float':'left'});
       var cwidth = $(this.container).width();
       var mwidth = $(this.mytextdiv).width();
-      var font_size = this.options.auto_text_size_max;      
+      var font_size = this.options.auto_text_size_max;
       while(mwidth < (cwidth - (this.options.auto_text_size_margin * 2)) && font_size <= this.options.auto_text_size_max)
       {
         font_size++;
