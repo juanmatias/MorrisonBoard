@@ -21,6 +21,8 @@ class morris_builder extends dbservice
   protected $labelColor = '#416192';
   protected $backgroundColor = '#aaa';
   protected $color = array(4,3,6,3,3,3);
+  protected $coloridx = 0;
+  protected $colorpallete = array('#FEDA75','#FEF075','#FEF075','#DDB74A','#888BCD','#FEC175','#DD9C4A','#DDCE4A');
   /**
   *
   */
@@ -179,19 +181,32 @@ class morris_builder extends dbservice
 
   protected function _get_color()
   {
-    $idx = 4;
-    if($this->_get_color_sum($idx) == 0)
+
+    if(isset($this->coloridx))
     {
-      $idx = 2;
+      $this->coloridx++;
+      if($this->coloridx >= sizeof($this->colorpallete))
+      {
+        $this->coloridx = 0;
+      }
+      return $this->colorpallete[$this->coloridx];
+    }else
+    {
+      $idx = 4;
       if($this->_get_color_sum($idx) == 0)
       {
-        $idx = 0;
-        $this->_get_color_sum($idx);
+        $idx = 2;
+        if($this->_get_color_sum($idx) == 0)
+        {
+          $idx = 0;
+          $this->_get_color_sum($idx);
+        }
       }
-    }
 
-    return '#'.join('',$this->color);
+      return '#'.join('',$this->color);
+    }
   }
+
   protected function _get_color_sum($idx)
   {
 
