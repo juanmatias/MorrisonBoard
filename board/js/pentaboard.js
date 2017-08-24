@@ -88,6 +88,9 @@ function add_widget(panel)
       case 'line':
           widgets[panel[1]]=add_widget_line(panel[1],panel[4],panel[5]);
         break;
+      case 'text':
+          widgets[panel[1]]=add_widget_text(panel[1],panel[4],panel[5]);
+        break;
       default:
 
     }
@@ -98,7 +101,7 @@ function poll_server()
 {
   $.ajax(
   {
-     data:{apikey:'destinos'},
+     data:{apiKey:'destinos'},
      url:  morris_url,
      type:  'get',
      dataType: "json",
@@ -271,4 +274,73 @@ function add_widget_line(idx,data,usroptions, ...args)
 
   return m;
 
+}
+
+function add_widget_text(idx,data,usroptions, ...args)
+{
+  var options = {
+    element: contentidpreffix+idx,
+    data: data,
+    backgroundColor: '#ccc',
+    labelColor: '#060',
+    auto_text_size: false,
+    auto_text_size_max: 50,
+    auto_text_size_min: 5,
+    auto_text_size_margin: 10,
+  };
+  options = Object.assign({}, options, usroptions);
+
+  var m = {
+    options: options,
+    container: null,
+    mytextdiv: null,
+    text: function ()
+    {
+      if(this.container == null)
+      {
+        this.container = $('#'+this.options.element);
+        if($(this.container).length <= 0)
+        {
+          return false;
+        }
+      }
+      var style = 'color: '+this.options.labelColor+';';
+      if(this.options.auto_text_size)
+      {
+        style += ' font-size:'+this.options.auto_text_size_min+'px';
+      }
+      for(x in this.options.data)
+      {
+        this.mytextdiv = $('<div/>', {
+            class: 'morrison_text',
+            style: style,
+          }).html(this.options.data[x]['x']).appendTo(this.container);
+      }
+      if(this.options.auto_text_size)
+      {
+        this.autoSizeText();
+      }
+    },
+    setData: function (data)
+    {
+      $(this.container).html('');
+      this.data = data;
+      this.text();
+    },
+    autoSizeText: function()
+    {
+      $(this.mytextdiv).css({'float':'left'});
+      var cwidth = $(this.container).width();
+      var mwidth = $(this.mytextdiv).width();
+      var font_size = this.options.auto_text_size_max;      
+      while(mwidth < (cwidth - (this.options.auto_text_size_margin * 2)) && font_size <= this.options.auto_text_size_max)
+      {
+        font_size++;
+        $(this.mytextdiv).css({'font-size':font_size+'px'});
+      }
+      $(this.mytextdiv).css({'float':'none'});
+    }
+  };
+  m.text();
+  return m;
 }

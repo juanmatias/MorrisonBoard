@@ -253,7 +253,9 @@ array(
         case 'area':
           $pentaboard[] = $this->build_area($mypane);
           break;
-
+          case 'text':
+            $pentaboard[] = $this->build_text($mypane);
+            break;
         default:
           # code...
           break;

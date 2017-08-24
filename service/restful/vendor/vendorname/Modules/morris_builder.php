@@ -31,6 +31,37 @@ class morris_builder extends dbservice
 
 
 
+  protected function build_text($mypane)
+  {
+    if(!$this->exec_query($mypane['sql'],(isset($mypane['sql_values'])?$mypane['sql_values']:array())))
+    {
+      return null;
+    }
+    else
+    {
+
+      $data = array();
+      while($row = $this->fetch_assoc())
+      {
+        $data[] = array('x' => $row[$mypane['x'][0]]);
+      }
+
+      $htmlcolors = array();
+      foreach ($data as $key => $value) {
+        $htmlcolors[] = $this->_get_color();
+      }
+
+      $pentaboard = array($mypane['name'],$mypane['id'],$mypane['cols'],$mypane['type'],
+      $data,
+      array('colors' => $htmlcolors,
+            'labelColor' => $this->labelColor,
+            'backgroundColor' => $this->backgroundColor));
+    }
+
+    return $pentaboard;
+
+  }
+
   protected function build_donut($mypane)
   {
     // $sql = $mypane['sql'];
