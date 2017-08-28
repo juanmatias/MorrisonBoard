@@ -22,7 +22,7 @@ class morris_builder extends dbservice
   protected $backgroundColor = '#aaa';
   protected $color = array(4,3,6,3,3,3);
   protected $coloridx = 0;
-  protected $colorpallete = array('#FEDA75','#FEF075','#FEF075','#DDB74A','#888BCD','#FEC175','#DD9C4A','#DDCE4A');
+  protected $colorpallete = array('#ffcc00','#cc0033','#004b80','#00788a','#556775','#d7361c','#990033','#eff5f9','#e3ecf1');
   /**
   *
   */
@@ -35,30 +35,50 @@ class morris_builder extends dbservice
 
   protected function build_text($mypane)
   {
-    if(!$this->exec_query($mypane['sql'],(isset($mypane['sql_values'])?$mypane['sql_values']:array())))
+    //'action' => [int 1=draw (or redraw) (sent); 0=delete (sent); 2=stay (when data has no changed this option keep draw in same state, generated here if data is the same, TODO: bind request to client to allow this function)]
+    if(!isset($mypane['action']))
     {
-      return null;
+      $mypane['action'] = 1;
     }
-    else
+    if((isset($mypane['action']) && $mypane['action'] == 1))
     {
-
-      $data = array();
-      while($row = $this->fetch_assoc())
+      if(!$this->exec_query($mypane['sql'],(isset($mypane['sql_values'])?$mypane['sql_values']:array())))
       {
-        $data[] = array('x' => $row[$mypane['x'][0]]);
+        return null;
       }
+      else
+      {
 
-      $htmlcolors = array();
-      foreach ($data as $key => $value) {
-        $htmlcolors[] = $this->_get_color();
+        $data = array();
+        while($row = $this->fetch_assoc())
+        {
+          $data[] = array('x' => $row[$mypane['x'][0]]);
+        }
+
+        $htmlcolors = array();
+        foreach ($data as $key => $value) {
+          $htmlcolors[] = $this->_get_color();
+        }
+
+        $options = array_merge(array('colors' => $htmlcolors,
+              'labelColor' => $this->labelColor,
+              'backgroundColor' => $this->backgroundColor), $mypane['options']);
+
+        $pentaboard = array($mypane['name'],$mypane['id'],$mypane['cols'],$mypane['type'],
+        $data,
+        $options,
+        $mypane['action']);
       }
-
-      $pentaboard = array($mypane['name'],$mypane['id'],$mypane['cols'],$mypane['type'],
-      $data,
-      array('colors' => $htmlcolors,
-            'labelColor' => $this->labelColor,
-            'backgroundColor' => $this->backgroundColor));
+    }else if(isset($mypane['action']) && $mypane['action'] == 0)
+    {
+      $pentaboard = array($mypane['name'],$mypane['id'],'','',
+      null,
+      null,
+      $mypane['action']);
     }
+
+    //add unadded properties to options just in case
+    // $pentaboard[sizeof($pentaboard) - 1][5] = array_merge($pentaboard[sizeof($pentaboard) - 1][5], $mypane['options']);
 
     return $pentaboard;
 
@@ -66,42 +86,57 @@ class morris_builder extends dbservice
 
   protected function build_donut($mypane)
   {
-    // $sql = $mypane['sql'];
-    // $this->db->queryPrep($sql);
-    // if(!$r = $this->db->queryExe())
-    if(!$this->exec_query($mypane['sql'],(isset($mypane['sql_values'])?$mypane['sql_values']:array())))
+    //'action' => [int 1=draw (or redraw) (sent); 0=delete (sent); 2=stay (when data has no changed this option keep draw in same state, generated here if data is the same, TODO: bind request to client to allow this function)]
+    if(!isset($mypane['action']))
     {
-      return null;
+      $mypane['action'] = 1;
     }
-    else
+    if((isset($mypane['action']) && $mypane['action'] == 1))
     {
-      // $r = $this->db->getResults();
-
-      $data = array();
-      $qty = 0;
-      while($row = $this->fetch_assoc())
+      if(!$this->exec_query($mypane['sql'],(isset($mypane['sql_values'])?$mypane['sql_values']:array())))
       {
-        $data[] = array('value' => $row[$mypane['values'][0]],'label'=>$row[$mypane['labels'][0]]);
-        $qty += floatval($row[$mypane['values'][0]]);
+        return null;
       }
-      if($mypane['values2percentage'])
+      else
       {
-        foreach ($data as $key => $value) {
-          $per = floatval($value['value']) * 100 / $qty;
-          $data[$key]['value'] = round($per,2);
+        // $r = $this->db->getResults();
+
+        $data = array();
+        $qty = 0;
+        while($row = $this->fetch_assoc())
+        {
+          $data[] = array('value' => $row[$mypane['values'][0]],'label'=>$row[$mypane['labels'][0]]);
+          $qty += floatval($row[$mypane['values'][0]]);
         }
-      }
-      $htmlcolors = array();
-      foreach ($data as $key => $value) {
-        $htmlcolors[] = $this->_get_color();
+        if($mypane['values2percentage'])
+        {
+          foreach ($data as $key => $value) {
+            $per = floatval($value['value']) * 100 / $qty;
+            $data[$key]['value'] = round($per,2);
+          }
+        }
+        $htmlcolors = array();
+        foreach ($data as $key => $value) {
+          $htmlcolors[] = $this->_get_color();
+        }
+
+        $options = array_merge(array('colors' => $htmlcolors,
+              'labelColor' => $this->labelColor,
+              'backgroundColor' => $this->backgroundColor,
+              'labels' => $mypane['labels']), $mypane['options']);
+
+        $pentaboard = array($mypane['name'],$mypane['id'],$mypane['cols'],$mypane['type'],
+        $data,
+        $options,
+      $mypane['action']);
       }
 
-      $pentaboard = array($mypane['name'],$mypane['id'],$mypane['cols'],$mypane['type'],
-      $data,
-      array('colors' => $htmlcolors,
-            'labelColor' => $this->labelColor,
-            'backgroundColor' => $this->backgroundColor,
-            'labels' => $mypane['labels']));
+    }else if(isset($mypane['action']) && $mypane['action'] == 0)
+    {
+      $pentaboard = array($mypane['name'],$mypane['id'],'','',
+      null,
+      null,
+      $mypane['action']);
     }
 
     return $pentaboard;
@@ -119,64 +154,88 @@ class morris_builder extends dbservice
 
   protected function build_bars($mypane)
   {
-    // $sql = $mypane['sql'];
-    // $this->db->queryPrep($sql);
-    // if(!$r = $this->db->queryExe())
-    if(!$this->exec_query($mypane['sql'],(isset($mypane['sql_values'])?$mypane['sql_values']:array())))
+    //'action' => [int 1=draw (or redraw) (sent); 0=delete (sent); 2=stay (when data has no changed this option keep draw in same state, generated here if data is the same, TODO: bind request to client to allow this function)]
+    if(!isset($mypane['action']))
     {
-      return null;
+      $mypane['action'] = 1;
     }
-    else
+    if((isset($mypane['action']) && $mypane['action'] == 1))
     {
-      // $r = $this->db->getResults();
-
-      $data = array();
-      $qty = 0;
-      while($row = $this->fetch_assoc())
+      if(!$this->exec_query($mypane['sql'],(isset($mypane['sql_values'])?$mypane['sql_values']:array())))
       {
-        $aux = array('x' => $row[$mypane['x'][0]]);
+        return null;
+      }
+      else
+      {
+        // $r = $this->db->getResults();
+
+        $data = array();
+        $qty = 0;
+        while($row = $this->fetch_assoc())
+        {
+          $aux = array('x' => $row[$mypane['x'][0]]);
+          foreach ($mypane['values'] as $key => $value)
+          {
+
+            if($row[$value] == '' || $row[$value] == null)
+            {
+              $aux[$value] = 0;
+            }else
+            {
+              $aux[$value] = $row[$value];
+            }
+
+            $qty += floatval($row[$value]);
+          }
+          $data[] = $aux;
+        }
+        // if($mypane['values2percentage'])
+        // {
+        //   foreach ($data as $key => $value)
+        //   {
+        //     $per = floatval($value['value']) * 100 / $qty;
+        //     $data[$key]['value'] = round($per,2);
+        //   }
+        // }
+        $ykeys = array();
+        $barColors = array();
         foreach ($mypane['values'] as $key => $value)
         {
-
-          if($row[$value] == '' || $row[$value] == null)
-          {
-            $aux[$value] = 0;
-          }else
-          {
-            $aux[$value] = $row[$value];
-          }
-
-          $qty += floatval($row[$value]);
+          $ykeys[] = $value;
+          $barColors[] = $this->_get_color();
+          $this->_get_color();
         }
-        $data[] = $aux;
+
+        $options = array_merge(array('labelColor' => $this->labelColor,
+          'backgroundColor' => $this->backgroundColor,
+          'ykeys' => $ykeys,
+          'barColors' => $barColors,
+          'labels' => $mypane['labels']), $mypane['options']);
+
+        $pentaboard = array($mypane['name'],$mypane['id'],$mypane['cols'],$mypane['type'],
+        $data,
+        $options,
+        $mypane['action']);
       }
-      // if($mypane['values2percentage'])
-      // {
-      //   foreach ($data as $key => $value)
-      //   {
-      //     $per = floatval($value['value']) * 100 / $qty;
-      //     $data[$key]['value'] = round($per,2);
-      //   }
-      // }
-      $ykeys = array();
-      $barColors = array();
-      foreach ($mypane['values'] as $key => $value)
-      {
-        $ykeys[] = $value;
-        $barColors[] = $this->_get_color();
-        $this->_get_color();
-      }
-      $pentaboard = array($mypane['name'],$mypane['id'],$mypane['cols'],$mypane['type'],
-      $data,
-      array('labelColor' => $this->labelColor,
-        'backgroundColor' => $this->backgroundColor,
-        'ykeys' => $ykeys,
-        'barColors' => $barColors,
-        'labels' => $mypane['labels']));
+
+    }else if(isset($mypane['action']) && $mypane['action'] == 0)
+    {
+      $pentaboard = array($mypane['name'],$mypane['id'],'','',
+      null,
+      null,
+      $mypane['action']);
     }
 
     return $pentaboard;
 
+  }
+
+  /**
+  * Handles the cache
+  */
+  protected function cached($data)
+  {
+    return false;
   }
 
   protected function _get_color()

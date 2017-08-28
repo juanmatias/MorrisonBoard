@@ -59,11 +59,26 @@ array(
 'values2percentage' => [false|true], // wheter to convert value to %
 'ttl' => [time to live in ms, for cache],
 'labels' => [array of y value labels, they are binded to the same position of values],
-'options' => [array with other options to send to frontend inside the "options" key]
+'options' => [array with other options to send to frontend inside the "options" key],
+'action' => [int 1=draw (or redraw); 0=delete]
 ),
 
 */
     $mypanes = array(
+      array(
+      'type' => 'text',
+      'name' => 'Último código utilizado',
+      'id' => 'last_code',
+      'cols' => 1,
+      'sql' => "SELECT  selected_option FROM `pm_options` limit 1;",
+      // 'sql' => "SELECT concat(selected_option,' este es el colorete') AS selected_option FROM `pm_options` limit 1;",
+      'values' => array(),
+      'x' => array('selected_option'),
+      'values2percentage' => false,
+      'ttl' => 1000,
+      'labels' => array(),
+      'options' => array('unit' => '', 'labelColor' => '#BD9626', 'auto_text_size' => true)
+      ),
       array(
       'type' => 'area',
       'name' => 'por genero4',
@@ -75,7 +90,8 @@ array(
       'values2percentage' => false,
       'ttl' => 1000,
       'labels' => array('Mujeres','Hombres'),
-      'options' => array('unit' => 'clicks','parseTime' => false,)
+      'options' => array('unit' => 'clicks','parseTime' => false,),
+      'action' => 1,
       ),
       array(
       'type' => 'area',
@@ -235,7 +251,8 @@ array(
 
 
 
-    $pentaboard = array();
+    // first item is a key that allows us to reload the page if changed
+    $pentaboard = array('343rf34r4ewe');
 
     foreach ($mypanes as $key => $mypane) {
       switch ($mypane['type']) {
@@ -260,9 +277,6 @@ array(
           # code...
           break;
       }
-      //add unadded properties to options just in case
-      $pentaboard[sizeof($pentaboard) - 1][5] = array_merge($pentaboard[sizeof($pentaboard) - 1][5], $mypane['options']);
-
     }
     return $pentaboard;
   }
