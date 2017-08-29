@@ -24,7 +24,7 @@ Please, be consructive on your critisism. Thanks.
 
 ## Prerequisites
 
-**Morrison board** is constructed on top of **Morris** (which uses **Raphael**) and **Bee Rest**.
+**Morrison board** is constructed on top of **[Morris](https://morrisjs.github.io/morris.js/)** and **[Bee Rest](https://github.com/juanmatias/BeeRest)**.
 
 ## Install
 
