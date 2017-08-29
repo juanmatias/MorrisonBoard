@@ -1,6 +1,6 @@
 <?php
 /**
- * Class getdestinos | vendor/Modules/destinos.php
+ * Class getdata | vendor/Modules/destinos.php
  *
  * @package RESTful WebService Model
  * @author Juan Matias de la Camara Beovide <juanmatias@gmail.com>
@@ -10,13 +10,13 @@
  namespace Modules;
 
  /**
-  * Class getdestinos - Service to query destinos statistics
+  * Class getdata - Service to query destinos statistics
   *
   * Queries the database and build statistics about "destinos"
   *
   */
 
-class getdestinos extends morris_builder
+class getdata extends morris_builder
 {
   /**
   * Fills the valid_actions with this object's actions

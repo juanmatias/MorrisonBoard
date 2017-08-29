@@ -1,34 +1,11 @@
 <?php
 /**
- * Config file | config/config.php
+ * Autoloader file | core/autoloader/autoloader.php
  *
  * @package RESTful WebService Model
  * @author Juan Matias de la Camara Beovide <juanmatias@gmail.com>
  *
  */
-
-define('ROOT_DIR',getcwd().'/');
-define('DB_HOST','localhost');
-define('DB_NAME','pentatistics');
-define('DB_USR','pentatistics');
-define('DB_PWD','$penta.290%');
-
-$errors = array(
-  1 => 'Invalid parameters',
-  2 => 'Invalid token',
-  3 => 'Unknown error',
-  4 => 'Unknown sub action',
-  5 => 'Only accepts GET requests',
-  6 => 'No verb supplied',
-);
-
-// set autoload for classes (and its order)
-$classesDir = array (
-    ROOT_DIR.'core/',
-    ROOT_DIR.'vendor/vendorname/',
-    ROOT_DIR.'core/Modules/',
-);
-
 /**
  * Look for a class file in given directories
  *
@@ -57,7 +34,4 @@ spl_autoload_register(function ($class_name)
   }
 
 });
-
-
-
-?>
+ ?>

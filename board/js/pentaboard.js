@@ -32,7 +32,7 @@ function poll_server()
   $('#message').html('').removeClass('show').addClass('hide');
   $.ajax(
   {
-     data:{apiKey:'destinos'},
+     data:{apiKey:morris_apiKey},
      url:  morris_url,
      type:  'get',
      dataType: "json",
@@ -54,7 +54,7 @@ function poll_server()
           data.response.shift();
         }else
         {
-          $('#message').html('Recargando tablero a pedido del servidor...').removeClass('hide').addClass('show');
+          $('#message').html('Reloading page on server request...').removeClass('hide').addClass('show');
           window.location.reload(true);
         }
       }
@@ -64,7 +64,7 @@ function poll_server()
     setTimeout(poll_server,morris_poll_timeout);
 
   }).fail(function(){
-    $('#message').html('No se puede conectar al servidor, haciendo poll dentro de  '+(morris_poll_timeout * 2 / 1000)+' segundos.').removeClass('hide').addClass('show');
+    $('#message').html('Cannot connect to server, polling in '+(morris_poll_timeout * 2 / 1000)+' seconds.').removeClass('hide').addClass('show');
     setTimeout(poll_server,morris_poll_timeout * 2);
   });
 

@@ -38,6 +38,7 @@ class DB_connect {
            if ($this->datab->connect_error){
              die('connect_error : '.$this->datab->connect_error." Error Number : ".$this->datab->connect_errno);
            }
+        // $this->datab->set_charset('utf8');
       }
 
     /**

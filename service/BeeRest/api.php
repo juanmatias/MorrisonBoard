@@ -22,7 +22,10 @@
   *
   */
 
-include('./config/config.php');
+
+    include('./core/lang/errors.php');
+    include('./config/config.php');
+    include('./core/autoloader/autoloader.php');
 
 // Requests from the same server don't have a HTTP_ORIGIN header
 if (!array_key_exists('HTTP_ORIGIN', $_SERVER)) {
@@ -30,7 +33,7 @@ if (!array_key_exists('HTTP_ORIGIN', $_SERVER)) {
 }
 
 try {
-    $API = new securecall($_REQUEST['request'], $_SERVER['HTTP_ORIGIN']);
+    $API = new quiz($_REQUEST['request'], $_SERVER['HTTP_ORIGIN']);
     echo $API->processAPI();
 } catch (Exception $e) {
     echo json_encode(Array('error' => $e->getMessage()));

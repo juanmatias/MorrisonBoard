@@ -142,6 +142,40 @@ abstract class API
    }
 
    /**
+   * General process for requests
+   */
+   protected function processRequest() {
+      try
+      {
+        // In the verb I have the module name, i.e. "getdestinos"
+        if(!isset($this->verb) || $this->verb == '')
+        {
+          return array('code' => 6, 'error' => $this->errors[6]);
+        }
+        $service = "\\Modules\\".$this->verb;
+        $service = new $service();
+        // First argument is the action to call, so let's check if it exists
+        $action = '';
+        if(isset($this->args[0]))
+        {
+          $action = array_shift($this->args);
+        }
+        if(in_array($action,$service->valid_actions())){
+            $r = $service->$action($this->args,$this->request);
+
+            return array('code' => 0, 'response'=> $r);
+
+        }else{
+
+          return array('code' => 4, 'error' => $this->errors[4]);
+        }
+      } catch (Exception $e) {
+
+        return array('code' => 3, 'error' => $this->errors[3]);
+      }
+   }
+
+   /**
    * Returns version number
    */
    public function version()
